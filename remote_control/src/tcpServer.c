@@ -7,7 +7,6 @@
 #include <unistd.h>
 
 #include "debug.h"
-#include "customTime.h"
 
 #define SOCKTIMEOUT 5
 #define BUF_LEN 1024
