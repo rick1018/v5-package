@@ -1,0 +1,6 @@
+first relasee@20120615
+change struct @20120627
+fixed wmv3 setPPcfg bug @20120627
+fixed vc1 memory leak @20120627
+enable rgb dither  @20120712
+when header ready, set bPicInfoValid and bRunTimeValid false! @20121120

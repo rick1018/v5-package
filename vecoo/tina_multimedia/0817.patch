@@ -1,0 +1,12 @@
+diff --git a/allwinner/tina_multimedia/tplayer/awsink/tlayer_ctrl.c b/allwinner/tina_multimedia/tplayer/awsink/tlayer_ctrl.c
+index cf3ef3a..af1b44c 100755
+--- a/allwinner/tina_multimedia/tplayer/awsink/tlayer_ctrl.c
++++ b/allwinner/tina_multimedia/tplayer/awsink/tlayer_ctrl.c
+@@ -179,6 +179,7 @@ static int SetLayerParam(LayerContext* lc, VideoPicture* pPicture)
+ 	rBuf.y_phaddr = fbAddr[0];
+ 	rBuf.u_phaddr = fbAddr[1];
+ 	rBuf.v_phaddr = fbAddr[2];
++        rBuf.isExtPhy = VIDEO_USE_EXTERN_ION_BUF;
+ 	lc->mDispOutPort->queueToDisplay(lc->mDispOutPort,
+ 			vparam.srcInfo.w*vparam.srcInfo.h*3/2, &vparam, &rBuf);
+ 	lc->mDispOutPort->setEnable(lc->mDispOutPort, 1);

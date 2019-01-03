@@ -1,0 +1,12 @@
+LOCAL_PATH:= $(call my-dir)
+
+include $(CLEAR_VARS)
+LOCAL_SRC_FILES := ./source/ion.c
+LOCAL_MODULE := libInfotmMediaIon
+LOCAL_MODULE_TAGS := optional
+
+LOCAL_C_INCLUDES := 	\
+	$(LOCAL_PATH)/../include	\
+
+LOCAL_SHARED_LIBRARIES := liblog
+include $(BUILD_SHARED_LIBRARY)

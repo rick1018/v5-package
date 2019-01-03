@@ -1,0 +1,68 @@
+diff --git a/allwinner/tina_multimedia/Makefile b/allwinner/tina_multimedia/Makefile
+index af100d1..d18ddd6 100755
+--- a/allwinner/tina_multimedia/Makefile
++++ b/allwinner/tina_multimedia/Makefile
+@@ -171,6 +171,7 @@ define Build/Prepare
+	$(CP) -r ./tplayer $(PKG_BUILD_DIR)/tplayer
+	$(CP) -r ./jpegdecode $(PKG_BUILD_DIR)/jpegdecode
+	$(CP) -r ./tmetadataretriever $(PKG_BUILD_DIR)/tmetadataretriever
++	$(CP) -r ./trecorder $(PKG_BUILD_DIR)/trecorder
+	$(CP) -r ./tplayer/configs/$(TARGET_BOARD_PLATFORM)_linux_cedarx.conf $(PKG_BUILD_DIR)/
+ endef
+
+@@ -230,6 +231,14 @@ define Build/Compile
+		CPP="$(TARGET_CXX)" \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)"
++
++	$(MAKE) -C $(PKG_BUILD_DIR)/trecorder \
++		ARCH="$(TARGET_ARCH)" \
++		AR="$(TARGET_AR)" \
++		CC="$(TARGET_CC)" \
++		CPP="$(TARGET_CXX)" \
++		CFLAGS="$(TARGET_CFLAGS)" \
++		LDFLAGS="$(TARGET_LDFLAGS)"
+ endef
+
+ define Build/InstallDev
+@@ -245,7 +254,8 @@ define Build/InstallDev
+	$(CP) $(PKG_BUILD_DIR)/libcedarx/install/lib/*.so								$(PKG_INSTALL_DIR)/usr/lib/
+	$(CP) $(PKG_BUILD_DIR)/tplayer/libtplayer.so									$(PKG_INSTALL_DIR)/usr/lib/
+	$(CP) $(PKG_BUILD_DIR)/jpegdecode/libjpegdecode.so							$(PKG_INSTALL_DIR)/usr/lib/
+-	$(CP) $(PKG_BUILD_DIR)/tmetadataretriever/libtmetadataretriever.so					$(PKG_INSTALL_DIR)/usr/lib/
++	$(CP) $(PKG_BUILD_DIR)/tmetadataretriever/libtmetadataretriever.so				$(PKG_INSTALL_DIR)/usr/lib/
++	$(CP) $(PKG_BUILD_DIR)/trecorder/libtrecorder.so								$(PKG_INSTALL_DIR)/usr/lib/
+	cd $(PKG_INSTALL_DIR)/usr/lib/; rm -rf $(SYSTEM_LIB)
+
+	## copy header files.
+@@ -283,6 +293,9 @@ define Build/InstallDev
+	## tmetadataretriever
+	-cp $(PKG_BUILD_DIR)/tmetadataretriever/tmetadataretriever.h									$(PKG_INSTALL_DIR)/usr/include/allwinner/
+
++	##trecorder
++	-cp $(PKG_BUILD_DIR)/trecorder/Trecorder.h                                  $(PKG_INSTALL_DIR)/usr/include/allwinner/
++
+	## awrecorder
+	-cp $(PKG_BUILD_DIR)/libcedarx/awrecorder/awencoder.h							$(PKG_INSTALL_DIR)/usr/include/allwinner/
+
+@@ -298,15 +311,16 @@ define Package/$(PKG_NAME)/install
+
+	## copy libraries
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/$(CEDARC_LIBS_PATH)/*.so						$(1)/usr/lib/
+-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/libcedarc/install/lib/*.so							 $(1)/usr/lib/
++	$(INSTALL_BIN) $(PKG_BUILD_DIR)/libcedarc/install/lib/*.so							$(1)/usr/lib/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/libcedarc/install/lib/full-package-name/*.so			$(1)/usr/lib/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/$(CEDARX_LIBS_PATH)/*.so						$(1)/usr/lib/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/libcedarx/install/lib/*.so							$(1)/usr/lib/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tplayer/libtplayer.so								$(1)/usr/lib/
+-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/jpegdecode/libjpegdecode.so							$(1)/usr/lib/
+-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tmetadataretriever/libtmetadataretriever.so				$(1)/usr/lib/
+-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/libcedarx/install/bin/xplayerdemo						 $(1)/usr/bin/
+-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/libcedarx/install/bin/recoderdemo						 $(1)/usr/bin/
++	$(INSTALL_BIN) $(PKG_BUILD_DIR)/jpegdecode/libjpegdecode.so						$(1)/usr/lib/
++	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tmetadataretriever/libtmetadataretriever.so			$(1)/usr/lib/
++	$(INSTALL_BIN) $(PKG_BUILD_DIR)/trecorder/libtrecorder.so							$(1)/usr/lib/
++	$(INSTALL_BIN) $(PKG_BUILD_DIR)/libcedarx/install/bin/xplayerdemo					$(1)/usr/bin/
++	$(INSTALL_BIN) $(PKG_BUILD_DIR)/libcedarx/install/bin/recoderdemo					$(1)/usr/bin/
+	$(CP)          $(PKG_BUILD_DIR)/$(TARGET_BOARD_PLATFORM)_linux_cedarx.conf						 $(1)/etc/cedarx.conf
+	cd $(1)/usr/lib/; rm -rf $(SYSTEM_LIB) $(NOT_SUPPORT_VIDEO_LIBS) $(NOT_SUPPORT_AUDIO_LIBS)

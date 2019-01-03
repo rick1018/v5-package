@@ -1,0 +1,20 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2006-2011 OpenWrt.org
+
+START=80
+STOP=99
+
+USE_PROCD=1
+PROG=/usr/bin/kfc_server_pack 
+OOM_ADJ=-17
+
+start_service() {
+	procd_open_instance
+	procd_set_param oom_adj $OOM_ADJ
+	procd_set_param command $PROG /usr/lib/libkfc_server_enc.so /usr/lib/libip_loader_soft.so /tmp -D
+	procd_close_instance
+}
+
+shutdown() {
+	echo shutdown
+}
