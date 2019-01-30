@@ -29,7 +29,7 @@ define Package/$(PKG_NAME)
   SECTION:=utils
   CATEGORY:=Vecoo
   TITLE:=sample shane
-  DEPENDS:= +middleware-libs +libsample_confparser +libmpp_comm +ffmpeg
+  DEPENDS:= +middleware-libs +libsample_confparser +libmpp_comm +ffmpeg +media_server
 endef
 
 define Package/$(PKG_NAME)/description
@@ -46,11 +46,11 @@ endef
 
 define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR)/ \
-		LIBS="-lc -lpthread -lstdc++ -lmpp_comm -lmedia_mpp -lmpp_vi -lmpp_vo -lmedia_utils -L/home/shane/Downloads/action/New_SDK/Vecoo-SDK-v5-hdmi.Linux-x86_64/out/v5-hdmi/compile_dir/target/rtsp_client/lib -lavformat  " \
+		LIBS="-lc" \
 		ARCH="$(TARGET_ARCH)" \
 		AR="$(TARGET_AR)" \
-		CXX="$(TARGET_CXX)" \
-		CXXFLAGS="$(TARGET_CFLAGS) $(EXTRA_CPPFLAGS)" \
+		CC="$(TARGET_CC)" \
+		CFLAGS="$(TARGET_CFLAGS) $(EXTRA_CFLAGS)" \
 		LDFLAGS="$(TARGET_LDFLAGS)" \
 		CONFIG_PREFIX="$(PKG_INSTALL_DIR)" \
 		all

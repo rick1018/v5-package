@@ -1,25 +1,27 @@
 TARGET          = rtsp_client
 INCLUDES        += -I. \
-                   -I./include \
                    -I$(STAGING_DIR)/usr/include \
                    -I$(STAGING_DIR)/usr/include/utils \
                    -I$(STAGING_DIR)/usr/include/device \
                    -I$(STAGING_DIR)/usr/include/media \
                    -I$(STAGING_DIR)/usr/include/vo
-LIBS			:= -lmpp_comm \
+LIBS1			:= -lmpp_comm \
 			   -lmedia_mpp \
 			   -lmedia_utils \
-			   -lmpp_component
+			   -lmpp_component \
+			   -ldl -lpthread  -lrt -lavformat -lavcodec -lavutil \
+			   -L$(STAGING_DIR)/rootfs/usr/lib \
+		           -lstreamdrv -lfilemsgdrv -lmsgutil -lavdatadrv -lsemutil -lsharemem
 				   
-SRCS := sample_vi_venc_server.cpp 
+SRCS := rtsp_client.c
 
-OBJS    = $(SRCS:.cpp=.o)
+OBJS    = $(SRCS:.c=.o)
 
-%.o: %.cpp
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -fPIC -shared -std=c++11 -c -o $@ $<
+%.o: %.c
+	$(CC) $(CXXFLAGS) $(INCLUDES) -fPIC -shared -c -o $@ $<
 
 $(TARGET): $(OBJS)
-	$(CXX) $(LDFLAGS) $(OBJS) $(LIBS) $(LD_FLAG) -shared -o $@
+	$(CC) $(LDFLAGS) $(OBJS) $(LIBS1) $(LD_FLAG) -o $@
 
 all:$(TARGET) install
 

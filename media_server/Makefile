@@ -43,8 +43,11 @@ define Build/Compile
 endef
 
 define Package/media_server/install
-	$(INSTALL_DIR) $(1)/usr/bin $(1)/lib
-	cp -a $(PKG_BUILD_DIR)/ipcam/lib/*.so $(1)/lib/
+	$(INSTALL_DIR) $(1)/usr/bin $(1)/usr/lib
+	$(INSTALL_DIR) $(STAGING_DIR)/usr/include
+	cp -a $(PKG_BUILD_DIR)/ipcam/include/* $(STAGING_DIR)/usr/include
+	cp -a $(PKG_BUILD_DIR)/ipcam/av_capture/include/* $(STAGING_DIR)/usr/include
+	cp -a $(PKG_BUILD_DIR)/ipcam/lib/*.so $(1)/usr/lib/
 	cp -a $(PKG_BUILD_DIR)/ipcam/ipnc_app/network/live/appro/wis-streamer $(1)/usr/bin/
 endef
 $(eval $(call BuildPackage,media_server))
