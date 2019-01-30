@@ -1,0 +1,11 @@
+Server Name=VD3100
+IP Address=192.168.102.108
+MAC Address=d4:a4:25:00:20:31
+Model Name=VD3100
+Product Name=
+Product Discription=3MP IP Camera
+Vendor=SMAX Technology CO., LTD.
+H/W Version=v0.00
+F/W Version=0.00.01
+PT Support=no
+IO Trigger Support=yes

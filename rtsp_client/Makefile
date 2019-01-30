@@ -29,7 +29,7 @@ define Package/$(PKG_NAME)
   SECTION:=utils
   CATEGORY:=Vecoo
   TITLE:=sample shane
-  DEPENDS:= +middleware-libs +libsample_confparser +libmpp_comm +libavformat
+  DEPENDS:= +middleware-libs +libsample_confparser +libmpp_comm +ffmpeg
 endef
 
 define Package/$(PKG_NAME)/description

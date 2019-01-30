@@ -1,0 +1,20 @@
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+insmod /lib/modules/3.10.52/kernel/drivers/net/wireless/owl/bcmdhd/wlan_bcmdhd.ko iface_name=wlan firmware_path=/etc/firmware/fw_bcm43438a0.bin nvram_path=/etc/firmware/nvram.txt config_path=/etc/firmware/config.txt
+
+brcm_patchram_plus --enable_hci --no2bytes --tosleep 200000 --baudrate 3000000 --patchram /etc/firmware/bcm43438a0.hcd /dev/ttyS3 &
+
+/init.d/nvt start
+
+exit 0

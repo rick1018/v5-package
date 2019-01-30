@@ -1,0 +1,3 @@
+cp nvt /etc/init.d/.
+cp nvt.service /etc/systemd/system/.
+systemctl enable nvt.service

@@ -1,0 +1,12 @@
+[Unit]
+Description=nvt server
+
+[Service]
+Type=oneshot
+ExecStart=/etc/init.d/nvt start
+ExecStop=/etc/init.d/nvt stop
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+
