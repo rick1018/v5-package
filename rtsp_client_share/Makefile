@@ -18,7 +18,7 @@
 include $(TOPDIR)/rules.mk
 include $(BUILD_DIR)/kernel.mk
 
-PKG_NAME:=rtsp_client
+PKG_NAME:=rtsp_client_share
 PKG_RELEASE:=1
 
 PKG_BUILD_DIR := $(COMPILE_DIR)/$(PKG_NAME)
@@ -28,7 +28,7 @@ include $(BUILD_DIR)/package.mk
 define Package/$(PKG_NAME)
   SECTION:=utils
   CATEGORY:=Vecoo
-  TITLE:=sample shane
+  TITLE:= rtsp client push to wis-stream
   DEPENDS:= +middleware-libs +libsample_confparser +libmpp_comm +ffmpeg +media_server
 endef
 
@@ -57,7 +57,7 @@ define Build/Compile
 endef
 
 define Package/$(PKG_NAME)/install
-	$(INSTALL_DIR) $(1)/usr/bin $(1)/etc/ $(1)/etc/init.d/
+	$(INSTALL_DIR) $(1)/usr/bin 
 	$(CP) $(PKG_INSTALL_DIR)/usr/bin/* $(1)/usr/bin/
 endef
 

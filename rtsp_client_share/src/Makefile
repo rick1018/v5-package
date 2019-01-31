@@ -1,4 +1,4 @@
-TARGET          = rtsp_client
+TARGET          = rtsp_client_share
 INCLUDES        += -I. \
                    -I$(STAGING_DIR)/usr/include \
                    -I$(STAGING_DIR)/usr/include/utils \
