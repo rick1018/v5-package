@@ -895,35 +895,12 @@ MemMng_VidFrame_Insert( void *pData, int size, int blks, int frame_type, VIDEO_B
 	{
 		 WriteAddr = pVidInfo->start + pVidInfo->cur_blk*pVidInfo->blk_sz;
 		
-//		if (!WriteAddr || pData == NULL)
-    if( pData == NULL)
+    		if( pData == NULL)
 		{
 			__E("MemMng_memcpy fail!!\n");
 			return -1;
 		}
-#if 0			  
-		if(frame_type!=0)//only for video, audio's frame_type is 0
-		{
-			for (i = 0; i < pstStream->u32PackCount; i++)  
-			{		
-				memcpy( (void*)avframedata + (unsigned long)WriteAddr+size_v, pstStream->pstPack[i].pu8Addr[0], pstStream->pstPack[i].u32Len[0]);	
-
-				size_v += pstStream->pstPack[i].u32Len[0]; 
-			   if (pstStream->pstPack[i].u32Len[1] > 0)
-			   {
-					memcpy( (void*)avframedata + (unsigned long)WriteAddr+size_v, pstStream->pstPack[i].pu8Addr[1], pstStream->pstPack[i].u32Len[1]);
-				 size_v += pstStream->pstPack[i].u32Len[1];   	
-			   }
-			 }
-		}
-		else
-		
-		{//for audio
-			MemMng_memcpy( (void *)WriteAddr, pData , size );
-		}
-#else
 	  MemMng_memcpy( (void *)WriteAddr, pData , size );
-#endif
 
 	//memcpy( (void*)avframedata + (unsigned long)WriteAddr, pstStream, size );
 		//MemMng_memcpy( (void *)WriteAddr, pData , size );
@@ -946,14 +923,12 @@ MemMng_VidFrame_Insert( void *pData, int size, int blks, int frame_type, VIDEO_B
 
 			pVidInfo->gop.last_End = -1;
 			pVidInfo->gop.last_End_serial = -1;
-		}
-        else
-        {
+		} else {
 			pVidInfo->gop.last_Start = pVidInfo->gop.lastest_I;
 			pVidInfo->gop.last_Start_serial = pVidInfo->gop.lastest_I_serial;
 			if ((pVidInfo->cur_frame - 1) > 0)
 				pVidInfo->gop.last_End = pVidInfo->cur_frame - 1;
-            else
+            		else
 				pVidInfo->gop.last_End = pVidInfo->frame_num - 1;
 
 			pVidInfo->gop.last_End_serial = pVidInfo->cur_serial - 1;
@@ -974,9 +949,9 @@ MemMng_VidFrame_Insert( void *pData, int size, int blks, int frame_type, VIDEO_B
 //				memcpy( (void*)avframedata + (unsigned long)pVidInfo->extradata, (void*)avframedata + (unsigned long)WriteAddr, pVidInfo->extrasize);
 //			else
 //      MemMng_printheader(pData, 16);
-			if(frame_type == I_FRAME && size>=64)//Frank, Geo 's bitstream sometimes show  size=5????
+			if(frame_type == I_FRAME && size >= 64)//Frank, Geo 's bitstream sometimes show  size=5????
 			{
-				if(FindH264SPSPPSFrameType(pData)==1)
+				if(FindH264SPSPPSFrameType(pData) == 1)
 					MemMng_memcpy(pVidInfo->extradata,pData,pVidInfo->extrasize);
 				else
 				{
@@ -1019,9 +994,17 @@ int MemMng_Video_Write( void *pData, int size, int frame_type, VIDEO_BLK_INFO *p
 	int blk_use = (size + pVidInfo->blk_sz-1) / pVidInfo->blk_sz;
 	int IsContiguousBlk = 0;
 	int	free_cnt = 0;
+	int result = 0;
 
-	if (blk_use > pVidInfo->blk_num || size == 0)
-		goto MEM_MNG_WRITE_FAIL;
+	if (blk_use > pVidInfo->blk_num || size == 0){
+	    printf("size : %d blk_use : %d pVidInfo->blk_num : %d\n", size , blk_use, pVidInfo->blk_num);
+	    printf("Total size : %ld blk_sz : %d pVidInfo->video_type : %d\n", pVidInfo->size , pVidInfo->blk_sz, pVidInfo->video_type);
+	    printf("default width : %d height : %d \n", pVidInfo->width , pVidInfo->height);
+	    printf("MP4_MEM_SIZE : %d MP4_BLK_SIZE : %d \n", MP4_MEM_SIZE, MP4_BLK_SIZE);
+	    printf("MP4_CACHE_SIZE : %d MP4_CACHE_BLK_SIZE : %d \n", MP4_CACHE_SIZE, MP4_CACHE_BLK_SIZE);
+	    result = -4;
+	    goto MEM_MNG_WRITE_FAIL;
+	}
 
 	do
       {
@@ -1033,6 +1016,7 @@ int MemMng_Video_Write( void *pData, int size, int frame_type, VIDEO_BLK_INFO *p
 		/* Not enough free blk */
 		if (MemMng_VidFrame_Free(pVidInfo, freeframe) < 0)
 		{
+			result = -1;
 			goto MEM_MNG_WRITE_FAIL;
 		}
         else
@@ -1051,6 +1035,7 @@ int MemMng_Video_Write( void *pData, int size, int frame_type, VIDEO_BLK_INFO *p
 		   int dummy_blk_cnt = pVidInfo->blk_num - nextblk;
 		   if (MemMng_VidFrame_Insert(NULL, 0, dummy_blk_cnt, DUMMY_FRAME, pVidInfo) < 0)
 	 	   {
+			   result = -2;
 			   goto MEM_MNG_WRITE_FAIL;
 	 	   }
            else
@@ -1069,14 +1054,15 @@ int MemMng_Video_Write( void *pData, int size, int frame_type, VIDEO_BLK_INFO *p
 
 	if (MemMng_VidFrame_Insert(pData, size, blk_use, frame_type, pVidInfo) < 0)
 	{
+		result = -3;
 		goto MEM_MNG_WRITE_FAIL;
 	}
 //    __D("[%d] pVidInfo=%p video_type=%d size=%d %d %d\n", __LINE__,pVidInfo, pVidInfo->video_type,size,pVidInfo->cur_frame,pVidInfo->cur_serial);						   
-	return 0;
+	return result;
 
 MEM_MNG_WRITE_FAIL:
 	__E("MEM_MNG_WRITE_FAIL \n");
-	return -1;
+	return result;
 }
 
 
